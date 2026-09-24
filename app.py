@@ -332,16 +332,17 @@ with st.sidebar:
     max_epochs = st.number_input("Max epochs", 10, 2000, 200, step=10)
     patience = st.number_input("Early-stopping patience", 3, 100, 10, step=1)
 
-    st.divider()
-    st.header("☁️ Model persistence (GitHub Gist)")
-    st.caption(
-        "Streamlit Community Cloud wipes local files on every reboot/redeploy. "
-        "Save the trained model to a private Gist so it survives restarts."
-    )
-    default_token = st.secrets.get("GITHUB_TOKEN", "") if hasattr(st, "secrets") else ""
-    default_gist = st.secrets.get("GIST_ID", "") if hasattr(st, "secrets") else ""
-    github_token = st.text_input("GitHub token (gist scope)", value=default_token, type="password", label_visibility="collapsed")
-    gist_id_input = st.text_input("Gist ID (leave blank to create one on first save)", value=st.session_state.gist_id or default_gist, label_visibility="collapsed")
+    # st.divider()
+    # st.header("☁️ Model persistence (GitHub Gist)")
+    with st.expander("☁️ Model persistence (GitHub Gist)"):
+        st.caption(
+            "Streamlit Community Cloud wipes local files on every reboot/redeploy. "
+            "Save the trained model to a private Gist so it survives restarts."
+        )
+        default_token = st.secrets.get("GITHUB_TOKEN", "") if hasattr(st, "secrets") else ""
+        default_gist = st.secrets.get("GIST_ID", "") if hasattr(st, "secrets") else ""
+        github_token = st.text_input("GitHub token (gist scope)", value=default_token, type="password")
+        gist_id_input = st.text_input("Gist ID (leave blank to create one on first save)", value=st.session_state.gist_id or default_gist)
     st.session_state.gist_id = gist_id_input
 
     col_save, col_load = st.columns(2)
