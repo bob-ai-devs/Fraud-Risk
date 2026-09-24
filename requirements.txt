@@ -1,0 +1,11 @@
+streamlit>=1.36
+pandas>=2.0
+numpy>=1.26
+python-dateutil>=2.9
+matplotlib>=3.8
+seaborn>=0.13
+plotly>=5.22
+scipy>=1.11
+scikit-learn
+tensorflow
+pytz>=2023.3
