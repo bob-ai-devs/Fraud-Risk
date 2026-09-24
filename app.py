@@ -56,6 +56,42 @@ from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.optimizers import AdamW
 
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-color: {BOB_CREAM};
+    }}
+    #bob-banner {{
+        background: radial-gradient(circle at 15% 50%, {BOB_ORANGE} 0%, {BOB_ORANGE_DEEP} 45%, {BOB_MAROON} 100%);
+        padding: 22px 30px;
+        border-radius: 12px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    }}
+    #bob-banner h1 {{
+        color: white;
+        margin: 0;
+        font-size: 1.9em;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+    }}
+    #bob-banner p {{
+        color: #FFEFE0;
+        margin: 4px 0 0 0;
+        font-size: 0.95em;
+    }}
+    h1, h2, h3 {{ color: {BOB_NAVY}; }}
+    /* BOB AI Portal Card Border */
+    div[data-testid="stVerticalBlockBorderWrapper"] {{
+        border: 1.5px solid {BOB_ORANGE_DEEP} !important;
+        border-radius: 14px !important;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 # --------------------------------------------------------------------------- #
 # Page config
 # --------------------------------------------------------------------------- #
@@ -292,8 +328,8 @@ with st.sidebar:
     )
     default_token = st.secrets.get("GITHUB_TOKEN", "") if hasattr(st, "secrets") else ""
     default_gist = st.secrets.get("GIST_ID", "") if hasattr(st, "secrets") else ""
-    github_token = st.text_input("GitHub token (gist scope)", value=default_token, type="password")
-    gist_id_input = st.text_input("Gist ID (leave blank to create one on first save)", value=st.session_state.gist_id or default_gist)
+    github_token = st.text_input("GitHub token (gist scope)", value=default_token, type="password", label_visibility="collapsed")
+    gist_id_input = st.text_input("Gist ID (leave blank to create one on first save)", value=st.session_state.gist_id or default_gist, label_visibility="collapsed")
     st.session_state.gist_id = gist_id_input
 
     col_save, col_load = st.columns(2)
@@ -335,8 +371,17 @@ with st.sidebar:
 # --------------------------------------------------------------------------- #
 # Header
 # --------------------------------------------------------------------------- #
-st.title("🔍 Binary Classification — AML / Fraud")
-st.caption("Upload labeled data to train a model, then score new records with it.")
+# st.title("🔍 Binary Classification — AML / Fraud")
+# st.caption("Upload labeled data to train a model, then score new records with it.")
+st.markdown(
+    """
+    <div id="bob-banner">
+        <h1>🔍 Binary Classification — AML / Fraud</h1>
+        <p>Upload labeled data to train a model, then score new records with it.s</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 tab_train, tab_predict, tab_about = st.tabs(["🏋️ Train", "🔮 Predict", "ℹ️ About"])
 
