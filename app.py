@@ -343,42 +343,42 @@ with st.sidebar:
         default_gist = st.secrets.get("GIST_ID", "") if hasattr(st, "secrets") else ""
         github_token = st.text_input("GitHub token (gist scope)", value=default_token, type="password")
         gist_id_input = st.text_input("Gist ID (leave blank to create one on first save)", value=st.session_state.gist_id or default_gist)
-    st.session_state.gist_id = gist_id_input
-
-    col_save, col_load = st.columns(2)
-    with col_save:
-        if st.button("💾 Save to Gist", disabled=st.session_state.model is None):
-            if not github_token:
-                st.error("Provide a GitHub token with `gist` scope first.")
-            else:
-                try:
-                    with st.spinner("Uploading artifacts to Gist..."):
-                        new_id = save_artifacts_to_gist(github_token, st.session_state.gist_id)
-                    st.session_state.gist_id = new_id
-                    st.success(f"Saved. Gist ID: `{new_id}` — add it to secrets as GIST_ID for auto-reuse.")
-                except Exception as e:
-                    st.error(f"Save failed: {e}")
-    with col_load:
-        if st.button("📥 Load from Gist", disabled=not gist_id_input):
-            if not github_token:
-                st.error("Provide a GitHub token with `gist` scope first.")
-            else:
-                try:
-                    with st.spinner("Loading artifacts from Gist..."):
-                        model, scaler, feature_encoders, target_encoder, meta = load_artifacts_from_gist(
-                            github_token, gist_id_input
-                        )
-                    st.session_state.model = model
-                    st.session_state.scaler = scaler
-                    st.session_state.feature_encoders = feature_encoders
-                    st.session_state.label_encoder = target_encoder
-                    st.session_state.feature_columns = meta["feature_columns"]
-                    st.session_state.target_column = meta["target_column"]
-                    st.session_state.threshold = meta.get("threshold", 0.5)
-                    st.session_state.train_flag = True
-                    st.success(f"Loaded model saved at {meta.get('saved_at_utc', 'unknown time')} (UTC).")
-                except Exception as e:
-                    st.error(f"Load failed: {e}")
+        st.session_state.gist_id = gist_id_input
+    
+        col_save, col_load = st.columns(2)
+        with col_save:
+            if st.button("💾 Save to Gist", disabled=st.session_state.model is None):
+                if not github_token:
+                    st.error("Provide a GitHub token with `gist` scope first.")
+                else:
+                    try:
+                        with st.spinner("Uploading artifacts to Gist..."):
+                            new_id = save_artifacts_to_gist(github_token, st.session_state.gist_id)
+                        st.session_state.gist_id = new_id
+                        st.success(f"Saved. Gist ID: `{new_id}` — add it to secrets as GIST_ID for auto-reuse.")
+                    except Exception as e:
+                        st.error(f"Save failed: {e}")
+        with col_load:
+            if st.button("📥 Load from Gist", disabled=not gist_id_input):
+                if not github_token:
+                    st.error("Provide a GitHub token with `gist` scope first.")
+                else:
+                    try:
+                        with st.spinner("Loading artifacts from Gist..."):
+                            model, scaler, feature_encoders, target_encoder, meta = load_artifacts_from_gist(
+                                github_token, gist_id_input
+                            )
+                        st.session_state.model = model
+                        st.session_state.scaler = scaler
+                        st.session_state.feature_encoders = feature_encoders
+                        st.session_state.label_encoder = target_encoder
+                        st.session_state.feature_columns = meta["feature_columns"]
+                        st.session_state.target_column = meta["target_column"]
+                        st.session_state.threshold = meta.get("threshold", 0.5)
+                        st.session_state.train_flag = True
+                        st.success(f"Loaded model saved at {meta.get('saved_at_utc', 'unknown time')} (UTC).")
+                    except Exception as e:
+                        st.error(f"Load failed: {e}")
 
 
 # --------------------------------------------------------------------------- #
