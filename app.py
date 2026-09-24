@@ -56,6 +56,18 @@ from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.optimizers import AdamW
 
+
+# ==============================================================================
+# BANK OF BARODA BRAND PALETTE
+# ==============================================================================
+BOB_ORANGE = "#F7941D"       # primary — "Baroda Sun"
+BOB_ORANGE_DEEP = "#E8531B"  # sun-ray gradient end
+BOB_MAROON = "#8E1B3A"       # sun-ray gradient end / accents
+BOB_NAVY = "#12284C"         # wordmark / headings
+BOB_NAVY_LIGHT = "#1E3E73"
+BOB_CREAM = "#FFF8F1"        # page background
+BOB_GREY = "#5B6675"
+
 st.markdown(
     f"""
     <style>
