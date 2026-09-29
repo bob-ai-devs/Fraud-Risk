@@ -407,47 +407,8 @@ with tab_train:
         st.session_state.train_flag = False
         st.session_state.prev_file = uploaded_file
 
-    # if uploaded_file:
-    #     df = pd.read_csv(uploaded_file) if uploaded_file.name.endswith(".csv") else pd.read_excel(uploaded_file)
-    
-    
-    if uploaded_file is not None:
-        # 1. Calculate total size in bytes
-        uploaded_file.seek(0, os.SEEK_END)
-        total_bytes = uploaded_file.tell()
-        uploaded_file.seek(0)  # Reset pointer
-    
-        # 2. Instantiate the Streamlit progress bar
-        progress_bar = st.progress(0.0)
-        status_text = st.empty()
-    
-        chunk_size = 50_000  # Adjust rows per chunk depending on memory
-        chunks = []
-        
-        # 3. Stream data and update the st.progress tracker
-        for chunk in pd.read_csv(uploaded_file, chunksize=chunk_size):
-            chunks.append(chunk)
-            
-            # Track current position in bytes
-            bytes_read = uploaded_file.tell()
-            
-            # Convert to a decimal float between 0.0 and 1.0 for st.progress
-            percentage = min(bytes_read / total_bytes, 1.0)
-            
-            # 4. Push live updates to the UI
-            progress_bar.progress(percentage)
-            status_text.text(f"Progress: {int(percentage * 100)}%")
-    
-        # Combine data structures
-        df = pd.concat(chunks, axis=0)
-        
-        # 5. Clear or update status upon completion
-        progress_bar.empty()  # Removes the progress bar from screen
-        status_text.success("✅ File loaded successfully!")
-        # st.dataframe(df.head())
-
-
-
+    if uploaded_file:
+        df = pd.read_csv(uploaded_file) if uploaded_file.name.endswith(".csv") else pd.read_excel(uploaded_file)
 
         m1, m2 = st.columns(2)
         m1.metric("Rows", len(df))
