@@ -412,75 +412,40 @@ with tab_train:
     
     
     if uploaded_file is not None:
-        # Get total file size in bytes for the progress bar calculation
+        # 1. Calculate total size in bytes
         uploaded_file.seek(0, os.SEEK_END)
         total_bytes = uploaded_file.tell()
-        uploaded_file.seek(0)  # Reset pointer to the start
+        uploaded_file.seek(0)  # Reset pointer
     
-        # Initialize the progress elements
+        # 2. Instantiate the Streamlit progress bar
         progress_bar = st.progress(0.0)
         status_text = st.empty()
     
-        chunk_size = 50_000  # Number of rows to read per iteration
+        chunk_size = 50_000  # Adjust rows per chunk depending on memory
         chunks = []
-    
-        # Check file extension
-        file_extension = uploaded_file.name.split(".")[-1].lower()
-    
-        if file_extension == "csv":
-            # --- CSV HANDLING (Native Chunking) ---
-            for chunk in pd.read_csv(uploaded_file, chunksize=chunk_size):
-                chunks.append(chunk)
-                
-                # Approximate progress based on file stream bytes read
-                bytes_read = uploaded_file.tell()
-                percentage = min(bytes_read / total_bytes, 1.0)
-                
-                progress_bar.progress(percentage)
-                status_text.text(f"Loading CSV... {int(percentage * 100)}%")
-    
-        elif file_extension in ["xlsx", "xls"]:
-            # --- EXCEL HANDLING (Simulated Chunking via skiprows/nrows) ---
-            # First, read the header row so we know the schema
-            header_df = pd.read_excel(uploaded_file, nrows=0)
-            column_names = header_df.columns.tolist()
+        
+        # 3. Stream data and update the st.progress tracker
+        for chunk in pd.read_csv(uploaded_file, chunksize=chunk_size):
+            chunks.append(chunk)
             
-            skiprows = 1  # Start after the header
+            # Track current position in bytes
+            bytes_read = uploaded_file.tell()
             
-            while True:
-                # Read a specific window of rows
-                chunk = pd.read_excel(
-                    uploaded_file, 
-                    nrows=chunk_size, 
-                    skiprows=skiprows, 
-                    header=None, 
-                    names=column_names
-                )
-                
-                # If the chunk comes back completely empty, we reached the end of the file
-                if chunk.empty:
-                    break
-                    
-                chunks.append(chunk)
-                skiprows += chunk_size
-                
-                # For Excel, uploaded_file.tell() doesn't accurately track stream positions,
-                # so we approximate progress based on loaded rows relative to a max threshold 
-                # or simply push incremental progress steps.
-                percentage = min(skiprows / (skiprows + chunk_size), 0.95) # Cap until loop breaks
-                progress_bar.progress(percentage)
-                status_text.text(f"Loading Excel rows... ({skiprows:,} rows processed)")
+            # Convert to a decimal float between 0.0 and 1.0 for st.progress
+            percentage = min(bytes_read / total_bytes, 1.0)
+            
+            # 4. Push live updates to the UI
+            progress_bar.progress(percentage)
+            status_text.text(f"Progress: {int(percentage * 100)}%")
     
-        # Combine all chunks into the final dataframe
-        if chunks:
-            df = pd.concat(chunks, axis=0, ignore_index=True)
-            
-            # Final clean up
-            progress_bar.progress(1.0)
-            status_text.success(f"✅ Successfully loaded {len(df):,} total rows!")
-            # st.dataframe(df.head())
-        else:
-            st.error("The uploaded file contains no readable data.")
+        # Combine data structures
+        df = pd.concat(chunks, axis=0)
+        
+        # 5. Clear or update status upon completion
+        progress_bar.empty()  # Removes the progress bar from screen
+        status_text.success("✅ File loaded successfully!")
+        # st.dataframe(df.head())
+
 
 
 
