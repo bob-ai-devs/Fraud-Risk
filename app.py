@@ -390,7 +390,7 @@ st.markdown(
     """
     <div id="bob-banner">
         <h1>🔍 Binary Classification — AML / Fraud</h1>
-        <p>Upload labeled data to train a model, then score new records with it.s</p>
+        <p>Upload labeled data to train a model, then score new records with it.</p>
     </div>
     """,
     unsafe_allow_html=True,
